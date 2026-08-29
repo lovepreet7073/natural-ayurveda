@@ -8,6 +8,9 @@ export const SHOP = {
   owner: "Sharanpreet Kaur",
   /** Which Natural Ayurveda branch this shop is. Customers ask. */
   branch: "Kurali, Punjab",
+  /** Her agent code, written into every order's "Order By" column. Fixed — the
+   *  customer is never asked for it. */
+  orderBy: "SHARANPREET KR-5",
   // Owner's WhatsApp Business number in international format, digits only.
   whatsapp: WHATSAPP_NUMBER,
   phoneDisplay: "+91 62842 26783",

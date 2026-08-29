@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 import {
+  completeAddress,
+  customerFullName,
   EMPTY_PAYMENT,
+  isRelation,
   isPaymentMethod,
   isPaymentProof,
   orderSummaryText,
-  paymentLabel,
   priceOrder,
   validateCustomer,
   validatePayment,
@@ -14,7 +16,8 @@ import {
   type PricedOrder,
 } from "@/lib/order";
 import { serverEnv } from "@/lib/env";
-import { formatINR, whatsappLink } from "@/lib/shop";
+import { SHEET_PRODUCT_SLUGS, sheetLabel } from "@/lib/products";
+import { formatINR, SHOP, whatsappLink } from "@/lib/shop";
 
 export const runtime = "nodejs";
 
@@ -47,6 +50,7 @@ function readCustomer(raw: unknown): CustomerDetails {
   const c = (raw ?? {}) as Record<string, unknown>;
   return {
     name: clean(c.name, 80),
+    relation: isRelation(c.relation) ? c.relation : "",
     guardian: clean(c.guardian, 80),
     houseNo: clean(c.houseNo, 60),
     village: clean(c.village, 120),
@@ -143,6 +147,9 @@ function readPayment(raw: unknown): PaymentDetails {
   };
 }
 
+/** One row in exactly the shape of the Excel file she already keeps: City,
+ *  Pincode, combined name, one-line address, phone, COD amount, then a quantity
+ *  column per product, then who the order came through. */
 function sheetRow(
   orderId: string,
   customer: CustomerDetails,
@@ -150,39 +157,40 @@ function sheetRow(
   payment: PaymentDetails,
   callUrl: string
 ): Record<string, unknown> {
+  // Every product gets its column whether it was ordered or not, so the columns
+  // never shift and she can total a product down its own column.
+  const quantities: Record<string, number | string> = {};
+  for (const slug of SHEET_PRODUCT_SLUGS) {
+    const line = order.items.find((i) => i.slug === slug);
+    quantities[`qty:${sheetLabel(slug)}`] = line ? line.qty : "";
+  }
+
   return {
     orderId,
     placedAt: new Date().toISOString(),
-    name: customer.name,
-    guardian: customer.guardian,
-    houseNo: customer.houseNo,
-    village: customer.village,
-    street: customer.street,
-    landmark: customer.landmark,
-    postOffice: customer.postOffice,
-    tehsil: customer.tehsil,
-    district: customer.district,
-    state: customer.state,
+    callUrl,
+    city: customer.district,
     pincode: customer.pincode,
+    customerName: customerFullName(customer),
+    address: completeAddress(customer),
     phone: customer.phone,
     altPhone: customer.altPhone,
-    notes: customer.notes,
-    items: order.items.map((i) => `${i.name} x${i.qty}`).join(" | "),
-    subtotal: order.subtotal,
-    delivery: order.delivery,
-    total: order.total,
-    payment: paymentLabel(payment),
-    // Make the Sheet say which kind of proof to expect, not just leave a blank.
+    codReceive: order.total,
+    ...quantities,
+    orderBy: SHOP.orderBy,
+    note: customer.notes,
+    paymentMode: payment.method === "upi" ? "UPI" : "Cash on Delivery",
+    // Money is NOT in hand when an order is placed. The website only ever writes
+    // "Pending" (or "To verify" for a UPI claim); she is the one who marks it
+    // received, in the sheet, once it actually is.
+    paymentStatus: payment.method === "upi" ? "To verify" : "Pending",
     paymentRef:
       payment.method !== "upi"
         ? ""
         : payment.proof === "screenshot"
           ? "screenshot on WhatsApp"
           : payment.reference,
-    // A UPI order is never "New" — someone has to open the UPI app and check that
-    // the money actually arrived before it is packed.
-    status: payment.method === "upi" ? "Payment to verify" : "New",
-    callUrl,
+    status: "New",
   };
 }
 

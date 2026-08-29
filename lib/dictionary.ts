@@ -132,6 +132,10 @@ export const DICTIONARY = {
 
   // Field labels, in the same order as the address format she sends on WhatsApp.
   fName: { en: "Your Name", hi: "आपका नाम", pa: "ਤੁਹਾਡਾ ਨਾਂ" },
+  fRelation: { en: "You are", hi: "आप हैं", pa: "ਤੁਸੀਂ ਹੋ" },
+  relSO: { en: "S/O — Son of", hi: "S/O — पुत्र", pa: "S/O — ਪੁੱਤਰ" },
+  relWO: { en: "W/O — Wife of", hi: "W/O — पत्नी", pa: "W/O — ਪਤਨੀ" },
+  relDO: { en: "D/O — Daughter of", hi: "D/O — पुत्री", pa: "D/O — ਧੀ" },
   fGuardian: {
     en: "Father's / Husband's Name",
     hi: "पिता / पति का नाम",
@@ -294,6 +298,11 @@ export const DICTIONARY = {
     en: "Enter a 10 digit mobile number",
     hi: "10 अंकों का मोबाइल नंबर लिखें",
     pa: "10 ਅੰਕਾਂ ਦਾ ਮੋਬਾਈਲ ਨੰਬਰ ਲਿਖੋ",
+  },
+  errRelation: {
+    en: "Choose S/O, W/O or D/O",
+    hi: "S/O, W/O या D/O चुनें",
+    pa: "S/O, W/O ਜਾਂ D/O ਚੁਣੋ",
   },
   errGuardian: {
     en: "Write father's or husband's name",

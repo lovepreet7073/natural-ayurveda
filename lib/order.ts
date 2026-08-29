@@ -11,8 +11,19 @@ import { deliveryChargeFor, formatINR, SHOP } from "@/lib/shop";
  * A single freeform "address" box was the earlier design and was wrong: couriers
  * in this area need Post Office and District as separate lines.
  */
+/** How the customer relates to the person named next: son / wife / daughter of.
+ *  Her Excel writes "KARAMJEET KAUR W/O AMANDEEP SINGH" as one field, so the
+ *  relation has to be captured rather than guessed. */
+export type Relation = "S/O" | "W/O" | "D/O";
+
+export const RELATIONS: Relation[] = ["S/O", "W/O", "D/O"];
+
+export const isRelation = (value: unknown): value is Relation =>
+  RELATIONS.includes(value as Relation);
+
 export type CustomerDetails = {
   name: string;
+  relation: Relation | "";
   guardian: string;
   houseNo: string;
   village: string;
@@ -30,6 +41,7 @@ export type CustomerDetails = {
 
 export const EMPTY_CUSTOMER: CustomerDetails = {
   name: "",
+  relation: "",
   guardian: "",
   houseNo: "",
   village: "",
@@ -81,10 +93,6 @@ export function validatePayment(payment: PaymentDetails): "errPaymentRef" | null
   return /^[A-Za-z0-9]{6,24}$/.test(payment.reference.trim()) ? null : "errPaymentRef";
 }
 
-export function paymentLabel(payment: PaymentDetails): string {
-  return payment.method === "upi" ? "UPI — TO VERIFY" : "Cash on Delivery";
-}
-
 export type OrderRequest = {
   customer: CustomerDetails;
   payment?: PaymentDetails;
@@ -108,6 +116,7 @@ export function validateCustomer(c: CustomerDetails): FieldErrors {
   const errors: FieldErrors = {};
 
   if (c.name.trim().length < 2) errors.name = "errName";
+  if (!isRelation(c.relation)) errors.relation = "errRelation";
   if (c.guardian.trim().length < 2) errors.guardian = "errGuardian";
   if (c.village.trim().length < 2) errors.village = "errVillage";
   if (c.landmark.trim().length < 2) errors.landmark = "errLandmark";
@@ -152,6 +161,27 @@ export function priceOrder(items: { slug: string; qty: number }[]): PricedOrder 
   const subtotal = priced.reduce((sum, i) => sum + i.lineTotal, 0);
   const delivery = deliveryChargeFor(subtotal);
   return { items: priced, subtotal, delivery, total: subtotal + delivery };
+}
+
+/** "KARAMJEET KAUR W/O AMANDEEP SINGH" — one field, exactly as her Excel keeps it. */
+export function customerFullName(c: CustomerDetails): string {
+  return [c.name, c.relation, c.guardian].filter(Boolean).join(" ").toUpperCase();
+}
+
+/** One address line in her house style:
+ *  "Vill- Burj Dunnha, Near- Gurdwara Sahib, PO- Gholia Kurd, Dist- Moga" */
+export function completeAddress(c: CustomerDetails): string {
+  return [
+    c.houseNo ? `H.No- ${c.houseNo}` : "",
+    c.street,
+    c.village ? `Vill/Area- ${c.village}` : "",
+    c.landmark ? `Near- ${c.landmark}` : "",
+    c.postOffice ? `PO- ${c.postOffice}` : "",
+    c.tehsil ? `Teh- ${c.tehsil}` : "",
+    c.district ? `Dist- ${c.district}` : "",
+  ]
+    .filter(Boolean)
+    .join(", ");
 }
 
 /** The address block in her own format, so a website order and a phone order look

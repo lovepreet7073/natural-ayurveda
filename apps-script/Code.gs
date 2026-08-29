@@ -11,82 +11,106 @@
  *       Who has access: Anyone
  *  5. Copy the /exec URL it gives you into ORDER_SHEET_WEBHOOK_URL.
  *
- * Each order arrives as a new row. The first columns are the ones she acts on:
- * Status as a dropdown, and a one-tap Call link.
+ * The columns match the Excel file she already keeps — City, Pincode, combined
+ * name, one-line address, phone, COD amount, a quantity column per product, and
+ * Order By — with Status, a Call link and Payment Status added so an order can be
+ * worked from the row itself.
+ *
+ * Money is never recorded as received by the website. A new order is always
+ * "Pending"; only she marks it "Received" once it truly is.
  */
 
 var SECRET = "change-this-to-something-private";
 
+// The order's journey. Nothing here says anything about money — that is a
+// separate column, because an order can be Delivered and still unpaid.
 var STATUSES = [
   "New",
-  "Payment to verify",
-  "Confirmed by Call",
+  "Confirmed",
   "Packed",
   "Shipped",
   "Delivered",
   "Cancelled",
 ];
 
-// Action columns first so she never scrolls right to work an order.
-var COLUMNS = [
+// Whether the money is actually in hand. The website can only ever write
+// "Pending" or "To verify"; only she can honestly set "Received".
+var PAYMENT_STATUSES = ["Pending", "To verify", "Received", "Refunded"];
+
+// One quantity column per product, in the same order as SHEET_LABELS in
+// lib/products.ts. Add a product in both places or the columns drift.
+var PRODUCT_COLUMNS = [
+  "Cream",
+  "Sunscreen",
+  "Lip Balm",
+  "Rakta Mantra",
+  "Liver Amrit",
+  "Hair Oil",
+  "D-Tan Kit",
+  "Combo 3",
+  "Combo 2",
+];
+
+// Her existing Excel columns, in her order, with the few operational ones she
+// works from placed first so she never scrolls right to action an order.
+var BASE_COLUMNS = [
   "orderId",
   "placedAt",
   "status",
   "callUrl",
-  "name",
-  "guardian",
-  "houseNo",
-  "village",
-  "street",
-  "landmark",
-  "postOffice",
-  "tehsil",
-  "district",
-  "state",
+  "city",
   "pincode",
+  "customerName",
+  "address",
   "phone",
   "altPhone",
-  "notes",
-  "items",
-  "subtotal",
-  "delivery",
-  "total",
-  "payment",
+  "codReceive",
+];
+
+var TAIL_COLUMNS = [
+  "orderBy",
+  "note",
+  "paymentMode",
+  "paymentStatus",
   "paymentRef",
 ];
 
-var HEADINGS = [
+var BASE_HEADINGS = [
   "Order No",
   "Date & Time",
   "Status",
   "Call",
-  "Name",
-  "Father's/Husband's Name",
-  "House No.",
-  "Village/Area",
-  "Street/Road",
-  "Near By",
-  "PO",
-  "Tehsil",
-  "District",
-  "State",
+  "City",
   "Pincode",
-  "Phone No.",
+  "Customer & Father/Husband Name",
+  "Complete Address",
+  "Phone No",
   "Alt Phone",
+  "COD Receive",
+];
+
+var TAIL_HEADINGS = [
+  "Order By",
   "Note",
-  "Products",
-  "Items Rs",
-  "Delivery Rs",
-  "Receive Rs",
-  "Payment",
+  "Payment Mode",
+  "Payment Status",
   "UPI Ref",
 ];
 
+var COLUMNS = BASE_COLUMNS.concat(
+  PRODUCT_COLUMNS.map(function (label) {
+    return "qty:" + label;
+  })
+).concat(TAIL_COLUMNS);
+
+var HEADINGS = BASE_HEADINGS.concat(PRODUCT_COLUMNS).concat(TAIL_HEADINGS);
+
 var COL_ORDER_ID = COLUMNS.indexOf("orderId") + 1;
 var COL_STATUS = COLUMNS.indexOf("status") + 1;
+var COL_PAYMENT_STATUS = COLUMNS.indexOf("paymentStatus") + 1;
 
 // Text-ish fields Sheets would otherwise mangle by dropping leading zeros.
-var TEXT_FIELDS = ["phone", "altPhone", "pincode", "houseNo", "paymentRef"];
+var TEXT_FIELDS = ["phone", "altPhone", "pincode", "paymentRef"];
 
 function sheet_() {
   return SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
@@ -104,13 +128,13 @@ function ensureHeader_(sheet) {
   sheet.setFrozenColumns(1);
 }
 
-/** Status becomes a dropdown, so she taps instead of typing. */
-function applyStatusRule_(sheet, row) {
+/** Both status columns become dropdowns, so she taps instead of typing. */
+function applyDropdown_(sheet, row, column, values) {
   var rule = SpreadsheetApp.newDataValidation()
-    .requireValueInList(STATUSES, true)
+    .requireValueInList(values, true)
     .setAllowInvalid(true)
     .build();
-  sheet.getRange(row, COL_STATUS).setDataValidation(rule);
+  sheet.getRange(row, column).setDataValidation(rule);
 }
 
 function addOrder_(body) {
@@ -132,7 +156,9 @@ function addOrder_(body) {
   });
 
   sheet.appendRow(row);
-  applyStatusRule_(sheet, sheet.getLastRow());
+  var added = sheet.getLastRow();
+  applyDropdown_(sheet, added, COL_STATUS, STATUSES);
+  applyDropdown_(sheet, added, COL_PAYMENT_STATUS, PAYMENT_STATUSES);
   return { ok: true };
 }
 

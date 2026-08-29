@@ -10,6 +10,7 @@ import { chargesDelivery, formatINR, SHOP, UPI, upiEnabled, upiPayLink } from "@
 import {
   EMPTY_CUSTOMER,
   EMPTY_PAYMENT,
+  RELATIONS,
   validateCustomer,
   validatePayment,
   type CustomerDetails,
@@ -30,6 +31,8 @@ type Field = {
   multiline?: boolean;
   /** Post Office becomes a dropdown once the PIN code is known. */
   select?: boolean;
+  /** The S/O · W/O · D/O chooser, which pairs with the guardian's name. */
+  relation?: boolean;
   autoComplete?: string;
   /** Short fields sit two-per-row on phones so the form is not one long column. */
   half?: boolean;
@@ -46,7 +49,8 @@ const SECTIONS: Section[] = [
     heading: "secName",
     fields: [
       { key: "name", label: "fName", autoComplete: "name" },
-      { key: "guardian", label: "fGuardian" },
+      { key: "relation", label: "fRelation", relation: true, half: true },
+      { key: "guardian", label: "fGuardian", half: true },
     ],
   },
   {
@@ -302,7 +306,18 @@ export default function CheckoutPage() {
                       )}
                     </label>
 
-                    {field.select ? (
+                    {field.relation ? (
+                      <select {...shared}>
+                        <option value="">—</option>
+                        {RELATIONS.map((rel) => (
+                          <option key={rel} value={rel}>
+                            {t(
+                              rel === "S/O" ? "relSO" : rel === "W/O" ? "relWO" : "relDO"
+                            )}
+                          </option>
+                        ))}
+                      </select>
+                    ) : field.select ? (
                       <select {...shared} disabled={!verified}>
                         <option value="">
                           {verified ? t("choosePostOffice") : t("pinFillFirst")}
