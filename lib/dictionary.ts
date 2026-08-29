@@ -52,9 +52,9 @@ export const DICTIONARY = {
     pa: "ਆਯੁਰਵੈਦਿਕ ਚਮੜੀ ਤੇ ਵਾਲਾਂ ਦੀ ਸੰਭਾਲ, ਤੁਹਾਡੇ ਘਰ ਤੱਕ",
   },
   heroSub: {
-    en: "Order from home — pay only when the parcel reaches you",
-    hi: "घर बैठे मंगवाएं — सामान मिलने पर ही पैसे दें",
-    pa: "ਘਰ ਬੈਠੇ ਮੰਗਵਾਓ — ਸਾਮਾਨ ਮਿਲਣ 'ਤੇ ਹੀ ਪੈਸੇ ਦਿਓ",
+    en: "Order from home and we bring it to your door",
+    hi: "घर बैठे मंगवाएं, हम आपके दरवाज़े तक पहुँचाएंगे",
+    pa: "ਘਰ ਬੈਠੇ ਮੰਗਵਾਓ, ਅਸੀਂ ਤੁਹਾਡੇ ਦਰਵਾਜ਼ੇ ਤੱਕ ਪਹੁੰਚਾਵਾਂਗੇ",
   },
   seeProducts: { en: "See Products", hi: "प्रोडक्ट देखें", pa: "ਪ੍ਰੋਡਕਟ ਵੇਖੋ" },
   genuine: { en: "100% Genuine Products", hi: "100% असली प्रोडक्ट", pa: "100% ਅਸਲੀ ਪ੍ਰੋਡਕਟ" },
@@ -68,6 +68,18 @@ export const DICTIONARY = {
 
   // Delivery & payment
   cod: { en: "Cash on Delivery", hi: "कैश ऑन डिलीवरी", pa: "ਕੈਸ਼ ਆਨ ਡਿਲਿਵਰੀ" },
+  /** Used wherever both ways to pay are on offer, so nothing promises
+   *  cash-on-delivery to someone who is about to pay by UPI. */
+  payOptions: {
+    en: "Cash on Delivery or UPI",
+    hi: "कैश ऑन डिलीवरी या UPI",
+    pa: "ਕੈਸ਼ ਆਨ ਡਿਲਿਵਰੀ ਜਾਂ UPI",
+  },
+  payOptionsNote: {
+    en: "Pay the delivery person, or pay now by UPI — your choice",
+    hi: "डिलीवरी वाले को दें, या अभी UPI से दें — आपकी मर्ज़ी",
+    pa: "ਡਿਲਿਵਰੀ ਵਾਲੇ ਨੂੰ ਦਿਓ, ਜਾਂ ਹੁਣੇ UPI ਨਾਲ ਦਿਓ — ਤੁਹਾਡੀ ਮਰਜ਼ੀ",
+  },
   codExplain: {
     en: "Pay when you receive the parcel",
     hi: "सामान मिलने पर पैसे दें",

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { products } from "@/lib/products";
 import { ProductCard } from "@/components/product-card";
 import { T } from "@/components/t";
+import { upiEnabled } from "@/lib/shop";
 
 import type { MessageKey } from "@/lib/dictionary";
 
@@ -37,7 +38,7 @@ export default function HomePage() {
       <section className="border-b border-cream-deep bg-white px-4 py-4">
         <ul className="mx-auto flex max-w-5xl flex-wrap justify-center gap-x-8 gap-y-2 text-center text-base font-semibold text-leaf">
           <li>
-            ✅ <T k="cod" />
+            ✅ <T k={upiEnabled ? "payOptions" : "cod"} />
           </li>
           <li>
             🌿 <T k="genuine" />

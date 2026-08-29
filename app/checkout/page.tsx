@@ -249,8 +249,10 @@ export default function CheckoutPage() {
       <h1 className="font-serif text-3xl font-bold text-leaf">{t("yourDetails")}</h1>
 
       <p className="mt-4 rounded-xl bg-white px-4 py-3 text-base font-semibold text-leaf">
-        ✅ {t("codExplain")}
-        <span className="mt-1 block font-normal text-bark-soft">{t("noOnlinePayment")}</span>
+        ✅ {t(upiEnabled ? "payOptions" : "codExplain")}
+        <span className="mt-1 block font-normal text-bark-soft">
+          {t(upiEnabled ? "payOptionsNote" : "noOnlinePayment")}
+        </span>
       </p>
 
       <form onSubmit={submit} noValidate className="mt-6 space-y-7">

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { removeFromCart, setCartQty, useCart } from "@/lib/cart-store";
 import { useT } from "@/lib/i18n";
-import { chargesDelivery, DELIVERY, formatINR } from "@/lib/shop";
+import { chargesDelivery, DELIVERY, formatINR, upiEnabled } from "@/lib/shop";
 
 export default function CartPage() {
   const { lines, subtotal, delivery, total, ready } = useCart();
@@ -118,7 +118,9 @@ export default function CartPage() {
           <dt>{t("toPay")}</dt>
           <dd>{formatINR(total)}</dd>
         </div>
-        <p className="text-base font-semibold text-bark-soft">{t("codExplain")}</p>
+        <p className="text-base font-semibold text-bark-soft">
+          {t(upiEnabled ? "payOptions" : "codExplain")}
+        </p>
       </dl>
 
       <Link

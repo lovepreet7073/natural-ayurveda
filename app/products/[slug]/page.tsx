@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import { discountPercent, getProduct, products } from "@/lib/products";
 import { AddToCart } from "@/components/add-to-cart";
 import { T } from "@/components/t";
-import { chargesDelivery, DELIVERY, formatINR } from "@/lib/shop";
+import { chargesDelivery, DELIVERY, formatINR, upiEnabled } from "@/lib/shop";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -86,7 +86,12 @@ export default async function ProductPage({ params }: Params) {
           </div>
 
           <p className="rounded-xl bg-white px-4 py-3 text-base font-semibold text-leaf">
-            ✅ <T k="codExplain" />
+            ✅ <T k={upiEnabled ? "payOptions" : "codExplain"} />
+            {upiEnabled && (
+              <span className="mt-1 block font-normal text-bark-soft">
+                <T k="payOptionsNote" />
+              </span>
+            )}
             {chargesDelivery && !freeDelivery && (
               <span className="mt-1 block font-normal text-bark-soft">
                 <T
