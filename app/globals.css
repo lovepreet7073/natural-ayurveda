@@ -1,26 +1,35 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-cream: #faf6ee;
+  --color-cream-deep: #f2ebdd;
+  --color-bark: #2f2a24;
+  --color-bark-soft: #6b6259;
+  --color-leaf: #1f4d3a;
+  --color-leaf-dark: #163827;
+  --color-sage: #7d9b86;
+  --color-gold: #b8862f;
+  /* WhatsApp brand green — fixed by them, not ours to restyle. */
+  --color-whatsapp: #25d366;
+  --font-serif: var(--font-lora), ui-serif, Georgia, serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-cream);
+  color: var(--color-bark);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Hide number-input spinners on the quantity fields */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
 }
