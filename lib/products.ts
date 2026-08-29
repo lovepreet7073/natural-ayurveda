@@ -45,8 +45,8 @@ const SHEET_LABELS: Record<string, string> = {
   "liver-amrit-syrup-27-super-herbs-double": "Liver Amrit",
   "hair-care-oil-goodnesss-of-ayurveda-with": "Hair Oil",
   "d-tan-kit-aloevera-neem-papaya-orange": "D-Tan Kit",
-  "light-n-care-combo-kit-cream-face": "Combo 3",
-  "combo-kit-light-n-care-cream-super": "Combo 2",
+  "light-n-care-combo-kit-cream-face": "Full Kit",
+  "combo-kit-light-n-care-cream-super": "Combo Kit",
 };
 
 /** Sheet column order for the per-product quantity columns. */

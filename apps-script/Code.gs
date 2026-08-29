@@ -47,8 +47,8 @@ var PRODUCT_COLUMNS = [
   "Liver Amrit",
   "Hair Oil",
   "D-Tan Kit",
-  "Combo 3",
-  "Combo 2",
+  "Full Kit",
+  "Combo Kit",
 ];
 
 // Her existing Excel columns, in her order, with the few operational ones she

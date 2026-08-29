@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import { discountPercent, getProduct, products } from "@/lib/products";
 import { AddToCart } from "@/components/add-to-cart";
 import { T } from "@/components/t";
-import { chargesDelivery, DELIVERY, formatINR, upiEnabled } from "@/lib/shop";
+import { formatINR } from "@/lib/shop";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -24,7 +24,6 @@ export default async function ProductPage({ params }: Params) {
   if (!product) notFound();
 
   const off = discountPercent(product);
-  const freeDelivery = !chargesDelivery || product.price >= DELIVERY.freeAbove;
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-6">
@@ -84,26 +83,6 @@ export default async function ProductPage({ params }: Params) {
               </>
             )}
           </div>
-
-          <p className="rounded-xl bg-white px-4 py-3 text-base font-semibold text-leaf">
-            ✅ <T k={upiEnabled ? "payOptions" : "codExplain"} />
-            {upiEnabled && (
-              <span className="mt-1 block font-normal text-bark-soft">
-                <T k="payOptionsNote" />
-              </span>
-            )}
-            {chargesDelivery && !freeDelivery && (
-              <span className="mt-1 block font-normal text-bark-soft">
-                <T
-                  k="deliveryCharge"
-                  vars={{
-                    charge: formatINR(DELIVERY.charge),
-                    free: formatINR(DELIVERY.freeAbove),
-                  }}
-                />
-              </span>
-            )}
-          </p>
 
           <AddToCart product={product} />
         </div>

@@ -9,8 +9,21 @@ const SOURCE = "https://thenaturalayurveda.com/products.json?limit=250";
 
 // A couple of listings on the source site have no usable body copy. Keep the
 // replacements here so re-running the import never wipes them out again.
+// The three she sells most, in the order she wants them seen. Anything not
+// listed keeps the source site's order and follows behind.
+const DISPLAY_ORDER = [
+  "light-n-care-anti-blemish-cream-ayurvedic",
+  "combo-kit-light-n-care-cream-super",
+  "light-n-care-combo-kit-cream-face",
+];
+
 const OVERRIDES = {
+  // The source titles for the two kits are messy and do not say what is inside.
+  "light-n-care-combo-kit-cream-face": {
+    name: "Light N Care Full Kit (Cream + Face Wash + Sunscreen)",
+  },
   "combo-kit-light-n-care-cream-super": {
+    name: "Light N Care Combo Kit (Cream + Face Wash)",
     description: [
       "The everyday duo: Light N Care Anti Blemish Cream paired with Super Bright Face Wash, for a routine that cleanses and treats together.",
       "Super Bright Face Wash lifts away dirt, oil and impurities without stripping the skin, leaving it fresh and ready to absorb the cream.",
@@ -132,10 +145,11 @@ for (const p of raw) {
 
   const override = OVERRIDES[slug] ?? {};
   const description = override.description ?? body;
+  const displayName = override.name ?? name;
 
   products.push({
     slug,
-    name,
+    name: displayName,
     price: Math.round(Number(variant.price)),
     mrp: variant.compare_at_price ? Math.round(Number(variant.compare_at_price)) : null,
     short: override.short ?? description[0]?.slice(0, 160) ?? "",
@@ -145,9 +159,12 @@ for (const p of raw) {
   });
 }
 
-// Cheapest-looking singles first reads badly on a shop page; keep source order but
-// push the combo kits down so individual products lead.
-products.sort((a, b) => Number(/combo|kit/i.test(a.name)) - Number(/combo|kit/i.test(b.name)));
+// Her best sellers lead; everything else keeps the order the source site used.
+const rank = (slug) => {
+  const i = DISPLAY_ORDER.indexOf(slug);
+  return i === -1 ? DISPLAY_ORDER.length : i;
+};
+products.sort((a, b) => rank(a.slug) - rank(b.slug));
 
 await writeFile(OUT_DATA, JSON.stringify(products, null, 2) + "\n");
 console.log(`\nWrote ${products.length} products to data/products.json`);
