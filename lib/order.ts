@@ -27,6 +27,9 @@ export type CustomerDetails = {
   guardian: string;
   houseNo: string;
   village: string;
+  /** Kept apart from the village because a town address needs both: the town and
+   *  the colony inside it. Her sheet gets a column for each. */
+  area: string;
   street: string;
   landmark: string;
   postOffice: string;
@@ -45,6 +48,7 @@ export const EMPTY_CUSTOMER: CustomerDetails = {
   guardian: "",
   houseNo: "",
   village: "",
+  area: "",
   street: "",
   landmark: "",
   postOffice: "",
@@ -174,7 +178,8 @@ export function completeAddress(c: CustomerDetails): string {
   return [
     c.houseNo ? `H.No- ${c.houseNo}` : "",
     c.street,
-    c.village ? `Vill/Area- ${c.village}` : "",
+    c.village ? `Vill/City- ${c.village}` : "",
+    c.area ? `Area- ${c.area}` : "",
     c.landmark ? `Near- ${c.landmark}` : "",
     c.postOffice ? `PO- ${c.postOffice}` : "",
     c.tehsil ? `Teh- ${c.tehsil}` : "",

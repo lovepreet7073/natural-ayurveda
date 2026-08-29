@@ -154,11 +154,8 @@ export const DICTIONARY = {
     pa: "ਪਿਤਾ / ਪਤੀ ਦਾ ਨਾਂ",
   },
   fHouseNo: { en: "House No. / Flat No.", hi: "मकान नंबर", pa: "ਮਕਾਨ ਨੰਬਰ" },
-  fVillage: {
-    en: "Village / Area / Colony",
-    hi: "गाँव / एरिया / कॉलोनी",
-    pa: "ਪਿੰਡ / ਏਰੀਆ / ਕਾਲੋਨੀ",
-  },
+  fVillage: { en: "Village / City", hi: "गाँव / शहर", pa: "ਪਿੰਡ / ਸ਼ਹਿਰ" },
+  fArea: { en: "Area / Colony", hi: "एरिया / कॉलोनी", pa: "ਏਰੀਆ / ਕਾਲੋਨੀ" },
   fStreet: { en: "Street / Road", hi: "गली / सड़क", pa: "ਗਲੀ / ਸੜਕ" },
   fLandmark: { en: "Near By / Landmark", hi: "पास की कोई पहचान", pa: "ਨੇੜੇ ਦੀ ਕੋਈ ਪਛਾਣ" },
   fPostOffice: { en: "Post Office (PO)", hi: "पोस्ट ऑफिस", pa: "ਡਾਕਖਾਨਾ (PO)" },
@@ -322,9 +319,9 @@ export const DICTIONARY = {
     pa: "ਪਿਤਾ ਜਾਂ ਪਤੀ ਦਾ ਨਾਂ ਲਿਖੋ",
   },
   errVillage: {
-    en: "Write your village, area or colony",
-    hi: "गाँव, एरिया या कॉलोनी लिखें",
-    pa: "ਪਿੰਡ, ਏਰੀਆ ਜਾਂ ਕਾਲੋਨੀ ਲਿਖੋ",
+    en: "Write your village or city",
+    hi: "अपना गाँव या शहर लिखें",
+    pa: "ਆਪਣਾ ਪਿੰਡ ਜਾਂ ਸ਼ਹਿਰ ਲਿਖੋ",
   },
   errLandmark: {
     en: "Write something near your house",

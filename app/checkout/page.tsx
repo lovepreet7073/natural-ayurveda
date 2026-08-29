@@ -58,7 +58,8 @@ const SECTIONS: Section[] = [
     fields: [
       { key: "houseNo", label: "fHouseNo", optional: true, half: true },
       { key: "street", label: "fStreet", optional: true, half: true },
-      { key: "village", label: "fVillage", autoComplete: "address-line1" },
+      { key: "village", label: "fVillage", autoComplete: "address-level2", half: true },
+      { key: "area", label: "fArea", optional: true, half: true },
       { key: "landmark", label: "fLandmark" },
       { key: "pincode", label: "fPincode", mode: "numeric", autoComplete: "postal-code" },
       { key: "postOffice", label: "fPostOffice", select: true },
